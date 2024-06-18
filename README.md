@@ -1,0 +1,1 @@
+LayerG JavaScript client

@@ -1,0 +1,46 @@
+{
+    "name": "@u2ulabs/layerg-js",
+    "version": "0.0.1",
+    "scripts": {
+        "build": "npx tsc && npx rollup -c --bundleConfigAsCjs && node build.mjs"
+    },
+    "description": "JavaScript client for LayerG server written in TypeScript.",
+    "main": "dist/layerg-js.cjs.js",
+    "module": "dist/layerg-js.esm.mjs",
+    "types": "dist/index.d.ts",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+	    "types": "./dist/index.d.ts",
+            "import": "./dist/layerg-js.esm.mjs",
+            "require": "./dist/layerg-js.cjs.js"
+        }
+    },
+    "keywords": [
+        "app server",
+        "client library",
+        "game server",
+        "layerg",
+        "realtime",
+        "realtime chat"
+    ],
+    "repository": "https://github.com/u2u-labs/layerg-js",
+    "homepage": "https://layerg.xyz",
+    "author": "phidangnguyen",
+    "contributors": [],
+    "license": "Apache-2.0",
+    "dependencies": {
+        "@scarf/scarf": "^1.1.1",
+        "base64-arraybuffer": "^1.0.2",
+        "js-base64": "^3.7.4",
+        "whatwg-fetch": "^3.6.2",
+        "ws": "^8.17.0"
+    },
+    "devDependencies": {
+        "@rollup/plugin-node-resolve": "^15.0.1",
+        "@rollup/plugin-typescript": "^11.0.0",
+        "rollup": "^3.10.0",
+        "tslib": "^2.4.1",
+        "esbuild": "^0.17.2"
+    }
+}
