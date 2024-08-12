@@ -12,7 +12,7 @@ import {
   ApiChannelMessageList,
   ApiCreateGroupRequest,
   ApiDeleteStorageObjectsRequest,
-  ApiEvent,
+  LayergapiEvent,
   ApiFriendList,
   ApiGroup,
   ApiGroupList,
@@ -29,7 +29,6 @@ import {
   ApiTournamentList,
   ApiTournamentRecordList,
   ApiUpdateAccountRequest,
-  ApiUpdateGroupRequest,
   ApiUsers,
   ApiUserGroupList,
   ApiWriteStorageObjectsRequest,
@@ -38,6 +37,8 @@ import {
   ApiAccountApple,
   ApiLinkSteamRequest,
   ApiValidatePurchaseResponse,
+  ApiAccountTelegram,
+  LayerGUpdateGroupBody,
 } from "./api.gen";
 
 import { Session } from "./session";
@@ -577,6 +578,21 @@ export class Client {
     );
   }
 
+
+  /** Authenticate a user with a TelegramID against the server. */
+  authenticateTelegram(telegramId : string, telegramAppData?: string, create?: boolean, username?: string, vars? : Record<string, string>, options: any = {}): Promise<Session> {
+    const request: ApiAccountTelegram = {
+      telegram_id: telegramId,
+      telegram_app_data: telegramAppData,
+      username,
+      vars
+    };
+
+    return this.apiClient.authenticateTelegram("", "", request, create, options).then((apiSession : ApiSession) => {
+      return new Session(apiSession.token || "", apiSession.refresh_token || "", apiSession.created || false);
+    });
+  }
+
   /** Authenticate a user with GameCenter against the server. */
   async authenticateGameCenter(
     bundleId: string,
@@ -744,7 +760,7 @@ export class Client {
   }
 
   /** Submit an event for processing in the server's registered runtime custom events handler. */
-  async emitEvent(session: Session, request: ApiEvent): Promise<boolean> {
+  async emitEvent(session: Session, request: LayergapiEvent): Promise<boolean> {
     if (this.autoRefreshSession && session.refresh_token &&
         session.isexpired((Date.now() + this.expiredTimespanMs)/1000)) {
         await this.sessionRefresh(session);
@@ -1576,7 +1592,7 @@ export class Client {
         await this.sessionRefresh(session);
     }
 
-    return this.apiClient.rpcFunc(session.token, id, JSON.stringify(input)).then((response: ApiRpc) => {
+    return this.apiClient.rpcFunc(session.token,"" ,"", id, JSON.stringify(input)).then((response: ApiRpc) => {
       return Promise.resolve({
         id: response.id,
         payload: (!response.payload) ? undefined : JSON.parse(response.payload)
@@ -1586,7 +1602,7 @@ export class Client {
 
   /** Execute an RPC function on the server. */
   async rpcHttpKey(httpKey: string, id: string, input?: object): Promise<RpcResponse> {
-    return this.apiClient.rpcFunc2("", id, input && JSON.stringify(input) || "", httpKey)
+    return this.apiClient.rpcFunc2("", "", "", id, input && JSON.stringify(input) || "", httpKey)
       .then((response: ApiRpc) => {
         return Promise.resolve({
           id: response.id,
@@ -1751,7 +1767,7 @@ export class Client {
   }
 
   /** Update a group the user is part of and has permissions to update. */
-  async updateGroup(session: Session, groupId: string, request: ApiUpdateGroupRequest): Promise<boolean> {
+  async updateGroup(session: Session, groupId: string, request: LayerGUpdateGroupBody): Promise<boolean> {
     if (this.autoRefreshSession && session.refresh_token &&
         session.isexpired((Date.now() + this.expiredTimespanMs)/1000)) {
         await this.sessionRefresh(session);

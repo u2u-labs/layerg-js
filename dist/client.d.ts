@@ -1,4 +1,4 @@
-import { ApiAccount, ApiAccountCustom, ApiAccountDevice, ApiAccountEmail, ApiAccountFacebook, ApiAccountFacebookInstantGame, ApiAccountGoogle, ApiAccountGameCenter, ApiAccountSteam, ApiCreateGroupRequest, ApiDeleteStorageObjectsRequest, ApiEvent, ApiMatchList, ApiReadStorageObjectsRequest, ApiStorageObjectAcks, ApiUpdateAccountRequest, ApiUpdateGroupRequest, ApiAccountApple, ApiLinkSteamRequest, ApiValidatePurchaseResponse } from "./api.gen";
+import { ApiAccount, ApiAccountCustom, ApiAccountDevice, ApiAccountEmail, ApiAccountFacebook, ApiAccountFacebookInstantGame, ApiAccountGoogle, ApiAccountGameCenter, ApiAccountSteam, ApiCreateGroupRequest, ApiDeleteStorageObjectsRequest, LayergapiEvent, ApiMatchList, ApiReadStorageObjectsRequest, ApiStorageObjectAcks, ApiUpdateAccountRequest, ApiAccountApple, ApiLinkSteamRequest, ApiValidatePurchaseResponse, LayerGUpdateGroupBody } from "./api.gen";
 import { Session } from "./session";
 import { Socket } from "./socket";
 import { WebSocketAdapter } from "./web_socket_adapter";
@@ -383,6 +383,8 @@ export declare class Client {
     authenticateFacebook(token: string, create?: boolean, username?: string, sync?: boolean, vars?: Record<string, string>, options?: any): Promise<Session>;
     /** Authenticate a user with Google against the server. */
     authenticateGoogle(token: string, create?: boolean, username?: string, vars?: Record<string, string>, options?: any): Promise<Session>;
+    /** Authenticate a user with a TelegramID against the server. */
+    authenticateTelegram(telegramId: string, telegramAppData?: string, create?: boolean, username?: string, vars?: Record<string, string>, options?: any): Promise<Session>;
     /** Authenticate a user with GameCenter against the server. */
     authenticateGameCenter(bundleId: string, playerId: string, publicKeyUrl: string, salt: string, signature: string, timestamp: string, username?: string, create?: boolean, vars?: Record<string, string>, options?: any): Promise<Session>;
     /** Authenticate a user with Steam against the server. */
@@ -406,7 +408,7 @@ export declare class Client {
     /** Demote a set of users in a group to the next role down. */
     demoteGroupUsers(session: Session, groupId: string, ids: Array<string>): Promise<boolean>;
     /** Submit an event for processing in the server's registered runtime custom events handler. */
-    emitEvent(session: Session, request: ApiEvent): Promise<boolean>;
+    emitEvent(session: Session, request: LayergapiEvent): Promise<boolean>;
     /** Fetch the current user's account. */
     getAccount(session: Session): Promise<ApiAccount>;
     /** Import Facebook friends and add them to a user's account. */
@@ -498,7 +500,7 @@ export declare class Client {
     /** Update fields in the current user's account. */
     updateAccount(session: Session, request: ApiUpdateAccountRequest): Promise<boolean>;
     /** Update a group the user is part of and has permissions to update. */
-    updateGroup(session: Session, groupId: string, request: ApiUpdateGroupRequest): Promise<boolean>;
+    updateGroup(session: Session, groupId: string, request: LayerGUpdateGroupBody): Promise<boolean>;
     /** Validate an Apple IAP receipt. */
     validatePurchaseApple(session: Session, receipt?: string): Promise<ApiValidatePurchaseResponse>;
     /** Validate a Google IAP receipt. */

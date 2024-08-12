@@ -53,8 +53,8 @@ var layergjs = (() => {
   };
 
   // index.ts
-  var nakama_js_exports = {};
-  __export(nakama_js_exports, {
+  var layerg_js_exports = {};
+  __export(layerg_js_exports, {
     Client: () => Client,
     DefaultSocket: () => DefaultSocket,
     Session: () => Session,
@@ -726,6 +726,31 @@ var layergjs = (() => {
         )
       ]);
     }
+    /** Delete the current user's account. */
+    deleteAccount(bearerToken, options = {}) {
+      const urlPath = "/v2/account";
+      const queryParams = /* @__PURE__ */ new Map();
+      let bodyJson = "";
+      const fullUrl = this.buildFullUrl(this.basePath, urlPath, queryParams);
+      const fetchOptions = buildFetchOptions("DELETE", options, bodyJson);
+      if (bearerToken) {
+        fetchOptions.headers["Authorization"] = "Bearer " + bearerToken;
+      }
+      return Promise.race([
+        fetch(fullUrl, fetchOptions).then((response) => {
+          if (response.status == 204) {
+            return response;
+          } else if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        }),
+        new Promise(
+          (_, reject) => setTimeout(reject, this.timeoutMs, "Request timed out.")
+        )
+      ]);
+    }
     /** Fetch the current user's account. */
     getAccount(bearerToken, options = {}) {
       const urlPath = "/v2/account";
@@ -781,19 +806,21 @@ var layergjs = (() => {
       ]);
     }
     /** Authenticate a user with an Apple ID against the server. */
-    authenticateApple(basicAuthUsername, basicAuthPassword, body, create, username, options = {}) {
-      if (body === null || body === void 0) {
-        throw new Error("'body' is a required parameter but is null or undefined.");
+    authenticateApple(basicAuthUsername, basicAuthPassword, account, create, username, options = {}) {
+      if (account === null || account === void 0) {
+        throw new Error("'account' is a required parameter but is null or undefined.");
       }
       const urlPath = "/v2/account/authenticate/apple";
       const queryParams = /* @__PURE__ */ new Map();
       queryParams.set("create", create);
       queryParams.set("username", username);
       let bodyJson = "";
-      bodyJson = JSON.stringify(body || {});
+      bodyJson = JSON.stringify(account || {});
       const fullUrl = this.buildFullUrl(this.basePath, urlPath, queryParams);
       const fetchOptions = buildFetchOptions("POST", options, bodyJson);
-      fetchOptions.headers["Authorization"] = "Basic " + encode(basicAuthUsername + ":" + basicAuthPassword);
+      if (basicAuthUsername) {
+        fetchOptions.headers["Authorization"] = "Basic " + encode(basicAuthUsername + ":" + basicAuthPassword);
+      }
       return Promise.race([
         fetch(fullUrl, fetchOptions).then((response) => {
           if (response.status == 204) {
@@ -810,19 +837,21 @@ var layergjs = (() => {
       ]);
     }
     /** Authenticate a user with a custom id against the server. */
-    authenticateCustom(basicAuthUsername, basicAuthPassword, body, create, username, options = {}) {
-      if (body === null || body === void 0) {
-        throw new Error("'body' is a required parameter but is null or undefined.");
+    authenticateCustom(basicAuthUsername, basicAuthPassword, account, create, username, options = {}) {
+      if (account === null || account === void 0) {
+        throw new Error("'account' is a required parameter but is null or undefined.");
       }
       const urlPath = "/v2/account/authenticate/custom";
       const queryParams = /* @__PURE__ */ new Map();
       queryParams.set("create", create);
       queryParams.set("username", username);
       let bodyJson = "";
-      bodyJson = JSON.stringify(body || {});
+      bodyJson = JSON.stringify(account || {});
       const fullUrl = this.buildFullUrl(this.basePath, urlPath, queryParams);
       const fetchOptions = buildFetchOptions("POST", options, bodyJson);
-      fetchOptions.headers["Authorization"] = "Basic " + encode(basicAuthUsername + ":" + basicAuthPassword);
+      if (basicAuthUsername) {
+        fetchOptions.headers["Authorization"] = "Basic " + encode(basicAuthUsername + ":" + basicAuthPassword);
+      }
       return Promise.race([
         fetch(fullUrl, fetchOptions).then((response) => {
           if (response.status == 204) {
@@ -839,19 +868,21 @@ var layergjs = (() => {
       ]);
     }
     /** Authenticate a user with a device id against the server. */
-    authenticateDevice(basicAuthUsername, basicAuthPassword, body, create, username, options = {}) {
-      if (body === null || body === void 0) {
-        throw new Error("'body' is a required parameter but is null or undefined.");
+    authenticateDevice(basicAuthUsername, basicAuthPassword, account, create, username, options = {}) {
+      if (account === null || account === void 0) {
+        throw new Error("'account' is a required parameter but is null or undefined.");
       }
       const urlPath = "/v2/account/authenticate/device";
       const queryParams = /* @__PURE__ */ new Map();
       queryParams.set("create", create);
       queryParams.set("username", username);
       let bodyJson = "";
-      bodyJson = JSON.stringify(body || {});
+      bodyJson = JSON.stringify(account || {});
       const fullUrl = this.buildFullUrl(this.basePath, urlPath, queryParams);
       const fetchOptions = buildFetchOptions("POST", options, bodyJson);
-      fetchOptions.headers["Authorization"] = "Basic " + encode(basicAuthUsername + ":" + basicAuthPassword);
+      if (basicAuthUsername) {
+        fetchOptions.headers["Authorization"] = "Basic " + encode(basicAuthUsername + ":" + basicAuthPassword);
+      }
       return Promise.race([
         fetch(fullUrl, fetchOptions).then((response) => {
           if (response.status == 204) {
@@ -868,19 +899,21 @@ var layergjs = (() => {
       ]);
     }
     /** Authenticate a user with an email+password against the server. */
-    authenticateEmail(basicAuthUsername, basicAuthPassword, body, create, username, options = {}) {
-      if (body === null || body === void 0) {
-        throw new Error("'body' is a required parameter but is null or undefined.");
+    authenticateEmail(basicAuthUsername, basicAuthPassword, account, create, username, options = {}) {
+      if (account === null || account === void 0) {
+        throw new Error("'account' is a required parameter but is null or undefined.");
       }
       const urlPath = "/v2/account/authenticate/email";
       const queryParams = /* @__PURE__ */ new Map();
       queryParams.set("create", create);
       queryParams.set("username", username);
       let bodyJson = "";
-      bodyJson = JSON.stringify(body || {});
+      bodyJson = JSON.stringify(account || {});
       const fullUrl = this.buildFullUrl(this.basePath, urlPath, queryParams);
       const fetchOptions = buildFetchOptions("POST", options, bodyJson);
-      fetchOptions.headers["Authorization"] = "Basic " + encode(basicAuthUsername + ":" + basicAuthPassword);
+      if (basicAuthUsername) {
+        fetchOptions.headers["Authorization"] = "Basic " + encode(basicAuthUsername + ":" + basicAuthPassword);
+      }
       return Promise.race([
         fetch(fullUrl, fetchOptions).then((response) => {
           if (response.status == 204) {
@@ -897,9 +930,9 @@ var layergjs = (() => {
       ]);
     }
     /** Authenticate a user with a Facebook OAuth token against the server. */
-    authenticateFacebook(basicAuthUsername, basicAuthPassword, body, create, username, sync, options = {}) {
-      if (body === null || body === void 0) {
-        throw new Error("'body' is a required parameter but is null or undefined.");
+    authenticateFacebook(basicAuthUsername, basicAuthPassword, account, create, username, sync, options = {}) {
+      if (account === null || account === void 0) {
+        throw new Error("'account' is a required parameter but is null or undefined.");
       }
       const urlPath = "/v2/account/authenticate/facebook";
       const queryParams = /* @__PURE__ */ new Map();
@@ -907,10 +940,12 @@ var layergjs = (() => {
       queryParams.set("username", username);
       queryParams.set("sync", sync);
       let bodyJson = "";
-      bodyJson = JSON.stringify(body || {});
+      bodyJson = JSON.stringify(account || {});
       const fullUrl = this.buildFullUrl(this.basePath, urlPath, queryParams);
       const fetchOptions = buildFetchOptions("POST", options, bodyJson);
-      fetchOptions.headers["Authorization"] = "Basic " + encode(basicAuthUsername + ":" + basicAuthPassword);
+      if (basicAuthUsername) {
+        fetchOptions.headers["Authorization"] = "Basic " + encode(basicAuthUsername + ":" + basicAuthPassword);
+      }
       return Promise.race([
         fetch(fullUrl, fetchOptions).then((response) => {
           if (response.status == 204) {
@@ -927,19 +962,21 @@ var layergjs = (() => {
       ]);
     }
     /** Authenticate a user with a Facebook Instant Game token against the server. */
-    authenticateFacebookInstantGame(basicAuthUsername, basicAuthPassword, body, create, username, options = {}) {
-      if (body === null || body === void 0) {
-        throw new Error("'body' is a required parameter but is null or undefined.");
+    authenticateFacebookInstantGame(basicAuthUsername, basicAuthPassword, account, create, username, options = {}) {
+      if (account === null || account === void 0) {
+        throw new Error("'account' is a required parameter but is null or undefined.");
       }
       const urlPath = "/v2/account/authenticate/facebookinstantgame";
       const queryParams = /* @__PURE__ */ new Map();
       queryParams.set("create", create);
       queryParams.set("username", username);
       let bodyJson = "";
-      bodyJson = JSON.stringify(body || {});
+      bodyJson = JSON.stringify(account || {});
       const fullUrl = this.buildFullUrl(this.basePath, urlPath, queryParams);
       const fetchOptions = buildFetchOptions("POST", options, bodyJson);
-      fetchOptions.headers["Authorization"] = "Basic " + encode(basicAuthUsername + ":" + basicAuthPassword);
+      if (basicAuthUsername) {
+        fetchOptions.headers["Authorization"] = "Basic " + encode(basicAuthUsername + ":" + basicAuthPassword);
+      }
       return Promise.race([
         fetch(fullUrl, fetchOptions).then((response) => {
           if (response.status == 204) {
@@ -956,19 +993,21 @@ var layergjs = (() => {
       ]);
     }
     /** Authenticate a user with Apple's GameCenter against the server. */
-    authenticateGameCenter(basicAuthUsername, basicAuthPassword, body, create, username, options = {}) {
-      if (body === null || body === void 0) {
-        throw new Error("'body' is a required parameter but is null or undefined.");
+    authenticateGameCenter(basicAuthUsername, basicAuthPassword, account, create, username, options = {}) {
+      if (account === null || account === void 0) {
+        throw new Error("'account' is a required parameter but is null or undefined.");
       }
       const urlPath = "/v2/account/authenticate/gamecenter";
       const queryParams = /* @__PURE__ */ new Map();
       queryParams.set("create", create);
       queryParams.set("username", username);
       let bodyJson = "";
-      bodyJson = JSON.stringify(body || {});
+      bodyJson = JSON.stringify(account || {});
       const fullUrl = this.buildFullUrl(this.basePath, urlPath, queryParams);
       const fetchOptions = buildFetchOptions("POST", options, bodyJson);
-      fetchOptions.headers["Authorization"] = "Basic " + encode(basicAuthUsername + ":" + basicAuthPassword);
+      if (basicAuthUsername) {
+        fetchOptions.headers["Authorization"] = "Basic " + encode(basicAuthUsername + ":" + basicAuthPassword);
+      }
       return Promise.race([
         fetch(fullUrl, fetchOptions).then((response) => {
           if (response.status == 204) {
@@ -985,19 +1024,21 @@ var layergjs = (() => {
       ]);
     }
     /** Authenticate a user with Google against the server. */
-    authenticateGoogle(basicAuthUsername, basicAuthPassword, body, create, username, options = {}) {
-      if (body === null || body === void 0) {
-        throw new Error("'body' is a required parameter but is null or undefined.");
+    authenticateGoogle(basicAuthUsername, basicAuthPassword, account, create, username, options = {}) {
+      if (account === null || account === void 0) {
+        throw new Error("'account' is a required parameter but is null or undefined.");
       }
       const urlPath = "/v2/account/authenticate/google";
       const queryParams = /* @__PURE__ */ new Map();
       queryParams.set("create", create);
       queryParams.set("username", username);
       let bodyJson = "";
-      bodyJson = JSON.stringify(body || {});
+      bodyJson = JSON.stringify(account || {});
       const fullUrl = this.buildFullUrl(this.basePath, urlPath, queryParams);
       const fetchOptions = buildFetchOptions("POST", options, bodyJson);
-      fetchOptions.headers["Authorization"] = "Basic " + encode(basicAuthUsername + ":" + basicAuthPassword);
+      if (basicAuthUsername) {
+        fetchOptions.headers["Authorization"] = "Basic " + encode(basicAuthUsername + ":" + basicAuthPassword);
+      }
       return Promise.race([
         fetch(fullUrl, fetchOptions).then((response) => {
           if (response.status == 204) {
@@ -1014,9 +1055,9 @@ var layergjs = (() => {
       ]);
     }
     /** Authenticate a user with Steam against the server. */
-    authenticateSteam(basicAuthUsername, basicAuthPassword, body, create, username, sync, options = {}) {
-      if (body === null || body === void 0) {
-        throw new Error("'body' is a required parameter but is null or undefined.");
+    authenticateSteam(basicAuthUsername, basicAuthPassword, account, create, username, sync, options = {}) {
+      if (account === null || account === void 0) {
+        throw new Error("'account' is a required parameter but is null or undefined.");
       }
       const urlPath = "/v2/account/authenticate/steam";
       const queryParams = /* @__PURE__ */ new Map();
@@ -1024,10 +1065,42 @@ var layergjs = (() => {
       queryParams.set("username", username);
       queryParams.set("sync", sync);
       let bodyJson = "";
-      bodyJson = JSON.stringify(body || {});
+      bodyJson = JSON.stringify(account || {});
       const fullUrl = this.buildFullUrl(this.basePath, urlPath, queryParams);
       const fetchOptions = buildFetchOptions("POST", options, bodyJson);
-      fetchOptions.headers["Authorization"] = "Basic " + encode(basicAuthUsername + ":" + basicAuthPassword);
+      if (basicAuthUsername) {
+        fetchOptions.headers["Authorization"] = "Basic " + encode(basicAuthUsername + ":" + basicAuthPassword);
+      }
+      return Promise.race([
+        fetch(fullUrl, fetchOptions).then((response) => {
+          if (response.status == 204) {
+            return response;
+          } else if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        }),
+        new Promise(
+          (_, reject) => setTimeout(reject, this.timeoutMs, "Request timed out.")
+        )
+      ]);
+    }
+    /** Authenticate a user with Google against the server. */
+    authenticateTelegram(basicAuthUsername, basicAuthPassword, account, create, options = {}) {
+      if (account === null || account === void 0) {
+        throw new Error("'account' is a required parameter but is null or undefined.");
+      }
+      const urlPath = "/v2/account/authenticate/telegram";
+      const queryParams = /* @__PURE__ */ new Map();
+      queryParams.set("create", create);
+      let bodyJson = "";
+      bodyJson = JSON.stringify(account || {});
+      const fullUrl = this.buildFullUrl(this.basePath, urlPath, queryParams);
+      const fetchOptions = buildFetchOptions("POST", options, bodyJson);
+      if (basicAuthUsername) {
+        fetchOptions.headers["Authorization"] = "Basic " + encode(basicAuthUsername + ":" + basicAuthPassword);
+      }
       return Promise.race([
         fetch(fullUrl, fetchOptions).then((response) => {
           if (response.status == 204) {
@@ -1160,15 +1233,15 @@ var layergjs = (() => {
       ]);
     }
     /** Add Facebook to the social profiles on the current user's account. */
-    linkFacebook(bearerToken, body, sync, options = {}) {
-      if (body === null || body === void 0) {
-        throw new Error("'body' is a required parameter but is null or undefined.");
+    linkFacebook(bearerToken, account, sync, options = {}) {
+      if (account === null || account === void 0) {
+        throw new Error("'account' is a required parameter but is null or undefined.");
       }
       const urlPath = "/v2/account/link/facebook";
       const queryParams = /* @__PURE__ */ new Map();
       queryParams.set("sync", sync);
       let bodyJson = "";
-      bodyJson = JSON.stringify(body || {});
+      bodyJson = JSON.stringify(account || {});
       const fullUrl = this.buildFullUrl(this.basePath, urlPath, queryParams);
       const fetchOptions = buildFetchOptions("POST", options, bodyJson);
       if (bearerToken) {
@@ -1316,7 +1389,9 @@ var layergjs = (() => {
       bodyJson = JSON.stringify(body || {});
       const fullUrl = this.buildFullUrl(this.basePath, urlPath, queryParams);
       const fetchOptions = buildFetchOptions("POST", options, bodyJson);
-      fetchOptions.headers["Authorization"] = "Basic " + encode(basicAuthUsername + ":" + basicAuthPassword);
+      if (basicAuthUsername) {
+        fetchOptions.headers["Authorization"] = "Basic " + encode(basicAuthUsername + ":" + basicAuthPassword);
+      }
       return Promise.race([
         fetch(fullUrl, fetchOptions).then((response) => {
           if (response.status == 204) {
@@ -1763,15 +1838,15 @@ var layergjs = (() => {
       ]);
     }
     /** Import Facebook friends and add them to a user's account. */
-    importFacebookFriends(bearerToken, body, reset, options = {}) {
-      if (body === null || body === void 0) {
-        throw new Error("'body' is a required parameter but is null or undefined.");
+    importFacebookFriends(bearerToken, account, reset, options = {}) {
+      if (account === null || account === void 0) {
+        throw new Error("'account' is a required parameter but is null or undefined.");
       }
       const urlPath = "/v2/friend/facebook";
       const queryParams = /* @__PURE__ */ new Map();
       queryParams.set("reset", reset);
       let bodyJson = "";
-      bodyJson = JSON.stringify(body || {});
+      bodyJson = JSON.stringify(account || {});
       const fullUrl = this.buildFullUrl(this.basePath, urlPath, queryParams);
       const fetchOptions = buildFetchOptions("POST", options, bodyJson);
       if (bearerToken) {
@@ -1792,16 +1867,43 @@ var layergjs = (() => {
         )
       ]);
     }
+    /** List friends of friends for the current user. */
+    listFriendsOfFriends(bearerToken, limit, cursor, options = {}) {
+      const urlPath = "/v2/friend/friends";
+      const queryParams = /* @__PURE__ */ new Map();
+      queryParams.set("limit", limit);
+      queryParams.set("cursor", cursor);
+      let bodyJson = "";
+      const fullUrl = this.buildFullUrl(this.basePath, urlPath, queryParams);
+      const fetchOptions = buildFetchOptions("GET", options, bodyJson);
+      if (bearerToken) {
+        fetchOptions.headers["Authorization"] = "Bearer " + bearerToken;
+      }
+      return Promise.race([
+        fetch(fullUrl, fetchOptions).then((response) => {
+          if (response.status == 204) {
+            return response;
+          } else if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        }),
+        new Promise(
+          (_, reject) => setTimeout(reject, this.timeoutMs, "Request timed out.")
+        )
+      ]);
+    }
     /** Import Steam friends and add them to a user's account. */
-    importSteamFriends(bearerToken, body, reset, options = {}) {
-      if (body === null || body === void 0) {
-        throw new Error("'body' is a required parameter but is null or undefined.");
+    importSteamFriends(bearerToken, account, reset, options = {}) {
+      if (account === null || account === void 0) {
+        throw new Error("'account' is a required parameter but is null or undefined.");
       }
       const urlPath = "/v2/friend/steam";
       const queryParams = /* @__PURE__ */ new Map();
       queryParams.set("reset", reset);
       let bodyJson = "";
-      bodyJson = JSON.stringify(body || {});
+      bodyJson = JSON.stringify(account || {});
       const fullUrl = this.buildFullUrl(this.basePath, urlPath, queryParams);
       const fetchOptions = buildFetchOptions("POST", options, bodyJson);
       if (bearerToken) {
@@ -2005,9 +2107,6 @@ var layergjs = (() => {
       if (groupId === null || groupId === void 0) {
         throw new Error("'groupId' is a required parameter but is null or undefined.");
       }
-      if (userIds === null || userIds === void 0) {
-        throw new Error("'userIds' is a required parameter but is null or undefined.");
-      }
       const urlPath = "/v2/group/{groupId}/demote".replace("{groupId}", encodeURIComponent(String(groupId)));
       const queryParams = /* @__PURE__ */ new Map();
       queryParams.set("user_ids", userIds);
@@ -2206,6 +2305,35 @@ var layergjs = (() => {
         )
       ]);
     }
+    /** Validate FB Instant IAP Receipt */
+    validatePurchaseFacebookInstant(bearerToken, body, options = {}) {
+      if (body === null || body === void 0) {
+        throw new Error("'body' is a required parameter but is null or undefined.");
+      }
+      const urlPath = "/v2/iap/purchase/facebookinstant";
+      const queryParams = /* @__PURE__ */ new Map();
+      let bodyJson = "";
+      bodyJson = JSON.stringify(body || {});
+      const fullUrl = this.buildFullUrl(this.basePath, urlPath, queryParams);
+      const fetchOptions = buildFetchOptions("POST", options, bodyJson);
+      if (bearerToken) {
+        fetchOptions.headers["Authorization"] = "Bearer " + bearerToken;
+      }
+      return Promise.race([
+        fetch(fullUrl, fetchOptions).then((response) => {
+          if (response.status == 204) {
+            return response;
+          } else if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        }),
+        new Promise(
+          (_, reject) => setTimeout(reject, this.timeoutMs, "Request timed out.")
+        )
+      ]);
+    }
     /** Validate Google IAP Receipt */
     validatePurchaseGoogle(bearerToken, body, options = {}) {
       if (body === null || body === void 0) {
@@ -2246,6 +2374,121 @@ var layergjs = (() => {
       bodyJson = JSON.stringify(body || {});
       const fullUrl = this.buildFullUrl(this.basePath, urlPath, queryParams);
       const fetchOptions = buildFetchOptions("POST", options, bodyJson);
+      if (bearerToken) {
+        fetchOptions.headers["Authorization"] = "Bearer " + bearerToken;
+      }
+      return Promise.race([
+        fetch(fullUrl, fetchOptions).then((response) => {
+          if (response.status == 204) {
+            return response;
+          } else if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        }),
+        new Promise(
+          (_, reject) => setTimeout(reject, this.timeoutMs, "Request timed out.")
+        )
+      ]);
+    }
+    /** List user's subscriptions. */
+    listSubscriptions(bearerToken, body, options = {}) {
+      if (body === null || body === void 0) {
+        throw new Error("'body' is a required parameter but is null or undefined.");
+      }
+      const urlPath = "/v2/iap/subscription";
+      const queryParams = /* @__PURE__ */ new Map();
+      let bodyJson = "";
+      bodyJson = JSON.stringify(body || {});
+      const fullUrl = this.buildFullUrl(this.basePath, urlPath, queryParams);
+      const fetchOptions = buildFetchOptions("POST", options, bodyJson);
+      if (bearerToken) {
+        fetchOptions.headers["Authorization"] = "Bearer " + bearerToken;
+      }
+      return Promise.race([
+        fetch(fullUrl, fetchOptions).then((response) => {
+          if (response.status == 204) {
+            return response;
+          } else if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        }),
+        new Promise(
+          (_, reject) => setTimeout(reject, this.timeoutMs, "Request timed out.")
+        )
+      ]);
+    }
+    /** Validate Apple Subscription Receipt */
+    validateSubscriptionApple(bearerToken, body, options = {}) {
+      if (body === null || body === void 0) {
+        throw new Error("'body' is a required parameter but is null or undefined.");
+      }
+      const urlPath = "/v2/iap/subscription/apple";
+      const queryParams = /* @__PURE__ */ new Map();
+      let bodyJson = "";
+      bodyJson = JSON.stringify(body || {});
+      const fullUrl = this.buildFullUrl(this.basePath, urlPath, queryParams);
+      const fetchOptions = buildFetchOptions("POST", options, bodyJson);
+      if (bearerToken) {
+        fetchOptions.headers["Authorization"] = "Bearer " + bearerToken;
+      }
+      return Promise.race([
+        fetch(fullUrl, fetchOptions).then((response) => {
+          if (response.status == 204) {
+            return response;
+          } else if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        }),
+        new Promise(
+          (_, reject) => setTimeout(reject, this.timeoutMs, "Request timed out.")
+        )
+      ]);
+    }
+    /** Validate Google Subscription Receipt */
+    validateSubscriptionGoogle(bearerToken, body, options = {}) {
+      if (body === null || body === void 0) {
+        throw new Error("'body' is a required parameter but is null or undefined.");
+      }
+      const urlPath = "/v2/iap/subscription/google";
+      const queryParams = /* @__PURE__ */ new Map();
+      let bodyJson = "";
+      bodyJson = JSON.stringify(body || {});
+      const fullUrl = this.buildFullUrl(this.basePath, urlPath, queryParams);
+      const fetchOptions = buildFetchOptions("POST", options, bodyJson);
+      if (bearerToken) {
+        fetchOptions.headers["Authorization"] = "Bearer " + bearerToken;
+      }
+      return Promise.race([
+        fetch(fullUrl, fetchOptions).then((response) => {
+          if (response.status == 204) {
+            return response;
+          } else if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        }),
+        new Promise(
+          (_, reject) => setTimeout(reject, this.timeoutMs, "Request timed out.")
+        )
+      ]);
+    }
+    /** Get subscription by product id. */
+    getSubscription(bearerToken, productId, options = {}) {
+      if (productId === null || productId === void 0) {
+        throw new Error("'productId' is a required parameter but is null or undefined.");
+      }
+      const urlPath = "/v2/iap/subscription/{productId}".replace("{productId}", encodeURIComponent(String(productId)));
+      const queryParams = /* @__PURE__ */ new Map();
+      let bodyJson = "";
+      const fullUrl = this.buildFullUrl(this.basePath, urlPath, queryParams);
+      const fetchOptions = buildFetchOptions("GET", options, bodyJson);
       if (bearerToken) {
         fetchOptions.headers["Authorization"] = "Bearer " + bearerToken;
       }
@@ -2325,17 +2568,17 @@ var layergjs = (() => {
       ]);
     }
     /** Write a record to a leaderboard. */
-    writeLeaderboardRecord(bearerToken, leaderboardId, body, options = {}) {
+    writeLeaderboardRecord(bearerToken, leaderboardId, record, options = {}) {
       if (leaderboardId === null || leaderboardId === void 0) {
         throw new Error("'leaderboardId' is a required parameter but is null or undefined.");
       }
-      if (body === null || body === void 0) {
-        throw new Error("'body' is a required parameter but is null or undefined.");
+      if (record === null || record === void 0) {
+        throw new Error("'record' is a required parameter but is null or undefined.");
       }
       const urlPath = "/v2/leaderboard/{leaderboardId}".replace("{leaderboardId}", encodeURIComponent(String(leaderboardId)));
       const queryParams = /* @__PURE__ */ new Map();
       let bodyJson = "";
-      bodyJson = JSON.stringify(body || {});
+      bodyJson = JSON.stringify(record || {});
       const fullUrl = this.buildFullUrl(this.basePath, urlPath, queryParams);
       const fetchOptions = buildFetchOptions("POST", options, bodyJson);
       if (bearerToken) {
@@ -2357,7 +2600,7 @@ var layergjs = (() => {
       ]);
     }
     /** List leaderboard records that belong to a user. */
-    listLeaderboardRecordsAroundOwner(bearerToken, leaderboardId, ownerId, limit, expiry, options = {}) {
+    listLeaderboardRecordsAroundOwner(bearerToken, leaderboardId, ownerId, limit, expiry, cursor, options = {}) {
       if (leaderboardId === null || leaderboardId === void 0) {
         throw new Error("'leaderboardId' is a required parameter but is null or undefined.");
       }
@@ -2368,6 +2611,7 @@ var layergjs = (() => {
       const queryParams = /* @__PURE__ */ new Map();
       queryParams.set("limit", limit);
       queryParams.set("expiry", expiry);
+      queryParams.set("cursor", cursor);
       let bodyJson = "";
       const fullUrl = this.buildFullUrl(this.basePath, urlPath, queryParams);
       const fetchOptions = buildFetchOptions("GET", options, bodyJson);
@@ -2399,6 +2643,31 @@ var layergjs = (() => {
       queryParams.set("min_size", minSize);
       queryParams.set("max_size", maxSize);
       queryParams.set("query", query);
+      let bodyJson = "";
+      const fullUrl = this.buildFullUrl(this.basePath, urlPath, queryParams);
+      const fetchOptions = buildFetchOptions("GET", options, bodyJson);
+      if (bearerToken) {
+        fetchOptions.headers["Authorization"] = "Bearer " + bearerToken;
+      }
+      return Promise.race([
+        fetch(fullUrl, fetchOptions).then((response) => {
+          if (response.status == 204) {
+            return response;
+          } else if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        }),
+        new Promise(
+          (_, reject) => setTimeout(reject, this.timeoutMs, "Request timed out.")
+        )
+      ]);
+    }
+    /** Get matchmaker stats. */
+    getMatchmakerStats(bearerToken, options = {}) {
+      const urlPath = "/v2/matchmaker/stats";
+      const queryParams = /* @__PURE__ */ new Map();
       let bodyJson = "";
       const fullUrl = this.buildFullUrl(this.basePath, urlPath, queryParams);
       const fetchOptions = buildFetchOptions("GET", options, bodyJson);
@@ -2474,7 +2743,7 @@ var layergjs = (() => {
       ]);
     }
     /** Execute a Lua function on the server. */
-    rpcFunc2(bearerToken, id, payload, httpKey, options = {}) {
+    rpcFunc2(bearerToken, basicAuthUsername, basicAuthPassword, id, payload, httpKey, options = {}) {
       if (id === null || id === void 0) {
         throw new Error("'id' is a required parameter but is null or undefined.");
       }
@@ -2487,6 +2756,9 @@ var layergjs = (() => {
       const fetchOptions = buildFetchOptions("GET", options, bodyJson);
       if (bearerToken) {
         fetchOptions.headers["Authorization"] = "Bearer " + bearerToken;
+      }
+      if (basicAuthUsername) {
+        fetchOptions.headers["Authorization"] = "Basic " + encode(basicAuthUsername + ":" + basicAuthPassword);
       }
       return Promise.race([
         fetch(fullUrl, fetchOptions).then((response) => {
@@ -2504,22 +2776,25 @@ var layergjs = (() => {
       ]);
     }
     /** Execute a Lua function on the server. */
-    rpcFunc(bearerToken, id, body, httpKey, options = {}) {
+    rpcFunc(bearerToken, basicAuthUsername, basicAuthPassword, id, payload, httpKey, options = {}) {
       if (id === null || id === void 0) {
         throw new Error("'id' is a required parameter but is null or undefined.");
       }
-      if (body === null || body === void 0) {
-        throw new Error("'body' is a required parameter but is null or undefined.");
+      if (payload === null || payload === void 0) {
+        throw new Error("'payload' is a required parameter but is null or undefined.");
       }
       const urlPath = "/v2/rpc/{id}".replace("{id}", encodeURIComponent(String(id)));
       const queryParams = /* @__PURE__ */ new Map();
       queryParams.set("http_key", httpKey);
       let bodyJson = "";
-      bodyJson = JSON.stringify(body || {});
+      bodyJson = JSON.stringify(payload || {});
       const fullUrl = this.buildFullUrl(this.basePath, urlPath, queryParams);
       const fetchOptions = buildFetchOptions("POST", options, bodyJson);
       if (bearerToken) {
         fetchOptions.headers["Authorization"] = "Bearer " + bearerToken;
+      }
+      if (basicAuthUsername) {
+        fetchOptions.headers["Authorization"] = "Basic " + encode(basicAuthUsername + ":" + basicAuthPassword);
       }
       return Promise.race([
         fetch(fullUrl, fetchOptions).then((response) => {
@@ -2747,6 +3022,34 @@ var layergjs = (() => {
         )
       ]);
     }
+    /** Delete a tournament record. */
+    deleteTournamentRecord(bearerToken, tournamentId, options = {}) {
+      if (tournamentId === null || tournamentId === void 0) {
+        throw new Error("'tournamentId' is a required parameter but is null or undefined.");
+      }
+      const urlPath = "/v2/tournament/{tournamentId}".replace("{tournamentId}", encodeURIComponent(String(tournamentId)));
+      const queryParams = /* @__PURE__ */ new Map();
+      let bodyJson = "";
+      const fullUrl = this.buildFullUrl(this.basePath, urlPath, queryParams);
+      const fetchOptions = buildFetchOptions("DELETE", options, bodyJson);
+      if (bearerToken) {
+        fetchOptions.headers["Authorization"] = "Bearer " + bearerToken;
+      }
+      return Promise.race([
+        fetch(fullUrl, fetchOptions).then((response) => {
+          if (response.status == 204) {
+            return response;
+          } else if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        }),
+        new Promise(
+          (_, reject) => setTimeout(reject, this.timeoutMs, "Request timed out.")
+        )
+      ]);
+    }
     /** List tournament records. */
     listTournamentRecords(bearerToken, tournamentId, ownerIds, limit, cursor, expiry, options = {}) {
       if (tournamentId === null || tournamentId === void 0) {
@@ -2780,17 +3083,17 @@ var layergjs = (() => {
       ]);
     }
     /** Write a record to a tournament. */
-    writeTournamentRecord2(bearerToken, tournamentId, body, options = {}) {
+    writeTournamentRecord2(bearerToken, tournamentId, record, options = {}) {
       if (tournamentId === null || tournamentId === void 0) {
         throw new Error("'tournamentId' is a required parameter but is null or undefined.");
       }
-      if (body === null || body === void 0) {
-        throw new Error("'body' is a required parameter but is null or undefined.");
+      if (record === null || record === void 0) {
+        throw new Error("'record' is a required parameter but is null or undefined.");
       }
       const urlPath = "/v2/tournament/{tournamentId}".replace("{tournamentId}", encodeURIComponent(String(tournamentId)));
       const queryParams = /* @__PURE__ */ new Map();
       let bodyJson = "";
-      bodyJson = JSON.stringify(body || {});
+      bodyJson = JSON.stringify(record || {});
       const fullUrl = this.buildFullUrl(this.basePath, urlPath, queryParams);
       const fetchOptions = buildFetchOptions("POST", options, bodyJson);
       if (bearerToken) {
@@ -2812,17 +3115,17 @@ var layergjs = (() => {
       ]);
     }
     /** Write a record to a tournament. */
-    writeTournamentRecord(bearerToken, tournamentId, body, options = {}) {
+    writeTournamentRecord(bearerToken, tournamentId, record, options = {}) {
       if (tournamentId === null || tournamentId === void 0) {
         throw new Error("'tournamentId' is a required parameter but is null or undefined.");
       }
-      if (body === null || body === void 0) {
-        throw new Error("'body' is a required parameter but is null or undefined.");
+      if (record === null || record === void 0) {
+        throw new Error("'record' is a required parameter but is null or undefined.");
       }
       const urlPath = "/v2/tournament/{tournamentId}".replace("{tournamentId}", encodeURIComponent(String(tournamentId)));
       const queryParams = /* @__PURE__ */ new Map();
       let bodyJson = "";
-      bodyJson = JSON.stringify(body || {});
+      bodyJson = JSON.stringify(record || {});
       const fullUrl = this.buildFullUrl(this.basePath, urlPath, queryParams);
       const fetchOptions = buildFetchOptions("PUT", options, bodyJson);
       if (bearerToken) {
@@ -2872,7 +3175,7 @@ var layergjs = (() => {
       ]);
     }
     /** List tournament records for a given owner. */
-    listTournamentRecordsAroundOwner(bearerToken, tournamentId, ownerId, limit, expiry, options = {}) {
+    listTournamentRecordsAroundOwner(bearerToken, tournamentId, ownerId, limit, expiry, cursor, options = {}) {
       if (tournamentId === null || tournamentId === void 0) {
         throw new Error("'tournamentId' is a required parameter but is null or undefined.");
       }
@@ -2883,6 +3186,7 @@ var layergjs = (() => {
       const queryParams = /* @__PURE__ */ new Map();
       queryParams.set("limit", limit);
       queryParams.set("expiry", expiry);
+      queryParams.set("cursor", cursor);
       let bodyJson = "";
       const fullUrl = this.buildFullUrl(this.basePath, urlPath, queryParams);
       const fetchOptions = buildFetchOptions("GET", options, bodyJson);
@@ -3753,6 +4057,18 @@ var layergjs = (() => {
           apiSession.refresh_token || "",
           apiSession.created || false
         );
+      });
+    }
+    /** Authenticate a user with a TelegramID against the server. */
+    authenticateTelegram(telegramId, telegramAppData, create, username, vars, options = {}) {
+      const request = {
+        telegram_id: telegramId,
+        telegram_app_data: telegramAppData,
+        username,
+        vars
+      };
+      return this.apiClient.authenticateTelegram("", "", request, create, options).then((apiSession) => {
+        return new Session(apiSession.token || "", apiSession.refresh_token || "", apiSession.created || false);
       });
     }
     /** Authenticate a user with GameCenter against the server. */
@@ -4665,7 +4981,7 @@ var layergjs = (() => {
         if (this.autoRefreshSession && session.refresh_token && session.isexpired((Date.now() + this.expiredTimespanMs) / 1e3)) {
           yield this.sessionRefresh(session);
         }
-        return this.apiClient.rpcFunc(session.token, id, JSON.stringify(input)).then((response) => {
+        return this.apiClient.rpcFunc(session.token, "", "", id, JSON.stringify(input)).then((response) => {
           return Promise.resolve({
             id: response.id,
             payload: !response.payload ? void 0 : JSON.parse(response.payload)
@@ -4676,7 +4992,7 @@ var layergjs = (() => {
     /** Execute an RPC function on the server. */
     rpcHttpKey(httpKey, id, input) {
       return __async(this, null, function* () {
-        return this.apiClient.rpcFunc2("", id, input && JSON.stringify(input) || "", httpKey).then((response) => {
+        return this.apiClient.rpcFunc2("", "", "", id, input && JSON.stringify(input) || "", httpKey).then((response) => {
           return Promise.resolve({
             id: response.id,
             payload: !response.payload ? void 0 : JSON.parse(response.payload)
@@ -4935,5 +5251,5 @@ var layergjs = (() => {
       });
     }
   };
-  return __toCommonJS(nakama_js_exports);
+  return __toCommonJS(layerg_js_exports);
 })();
