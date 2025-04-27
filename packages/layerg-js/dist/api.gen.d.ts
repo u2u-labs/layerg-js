@@ -598,7 +598,7 @@ export declare class LayerGApi {
     authenticateCustom(basicAuthUsername: string, basicAuthPassword: string, account: ApiAccountCustom, create?: boolean, username?: string, options?: any): Promise<ApiSession>;
     /** Authenticate a user with a device id against the server. */
     authenticateDevice(basicAuthUsername: string, basicAuthPassword: string, account: ApiAccountDevice, create?: boolean, username?: string, options?: any): Promise<ApiSession>;
-    /** Authenticate a user with an email+password against the server. */
+    /** Authenticate a user with an email+otp against the server. */
     authenticateEmail(basicAuthUsername: string, basicAuthPassword: string, account: ApiAccountEmail, create?: boolean, otp?: string, options?: any): Promise<ApiSession>;
     /** Authenticate a user with Evm against the server. */
     authenticateEvm(basicAuthUsername: string, basicAuthPassword: string, account: ApiAccountEvm, create?: boolean, options?: any): Promise<ApiSession>;

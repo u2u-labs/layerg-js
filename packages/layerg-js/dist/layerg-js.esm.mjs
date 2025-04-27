@@ -897,7 +897,7 @@ var LayerGApi = class {
       )
     ]);
   }
-  /** Authenticate a user with an email+password against the server. */
+  /** Authenticate a user with an email+otp against the server. */
   authenticateEmail(basicAuthUsername, basicAuthPassword, account, create, otp, options = {}) {
     if (account === null || account === void 0) {
       throw new Error("'account' is a required parameter but is null or undefined.");
@@ -4088,18 +4088,6 @@ var Client = class {
       });
     });
   }
-  /** Authenticate a user with an Apple ID against the server. */
-  authenticateApple(_0, _1, _2) {
-    return __async(this, arguments, function* (token, create, username, vars = {}, options = {}) {
-      const request = {
-        "token": token,
-        "vars": vars
-      };
-      return this.apiClient.authenticateApple(this.serverkey, "", request, create, username, options).then((apiSession) => {
-        return new Session(apiSession.token || "", apiSession.refresh_token || "", apiSession.created || false);
-      });
-    });
-  }
   /** Authenticate a user with a custom id against the server. */
   authenticateCustom(id, create, username, vars = {}, options = {}) {
     const request = {
@@ -4121,103 +4109,24 @@ var Client = class {
     });
   }
   /** Authenticate a user with an email+password against the server. */
-  authenticateEmail(email, password, create, username, vars) {
-    const request = {
-      "email": email,
-      "password": password,
-      "vars": vars
+  authenticateEmail(email, otp, create, vars) {
+    const account = {
+      email,
+      vars
     };
-    return this.apiClient.authenticateEmail(this.serverkey, "", request, create, username).then((apiSession) => {
+    return this.apiClient.authenticateEmail("", "", account, create, otp).then((apiSession) => {
       return new Session(apiSession.token || "", apiSession.refresh_token || "", apiSession.created || false);
     });
   }
-  /** Authenticate a user with a Facebook Instant Game token against the server. */
-  authenticateFacebookInstantGame(signedPlayerInfo, create, username, vars, options = {}) {
+  authenticateUA(code, state, source, vars) {
     const request = {
-      "signed_player_info": signedPlayerInfo,
+      "code": code,
+      "state": state,
+      "source": source,
       "vars": vars
     };
-    return this.apiClient.authenticateFacebookInstantGame(
-      this.serverkey,
-      "",
-      { signed_player_info: request.signed_player_info, vars: request.vars },
-      create,
-      username,
-      options
-    ).then((apiSession) => {
+    return this.apiClient.authenticateUA(this.serverkey, "", request).then((apiSession) => {
       return new Session(apiSession.token || "", apiSession.refresh_token || "", apiSession.created || false);
-    });
-  }
-  /** Authenticate a user with a Facebook OAuth token against the server. */
-  authenticateFacebook(token, create, username, sync, vars, options = {}) {
-    const request = {
-      "token": token,
-      "vars": vars
-    };
-    return this.apiClient.authenticateFacebook(this.serverkey, "", request, create, username, sync, options).then((apiSession) => {
-      return new Session(apiSession.token || "", apiSession.refresh_token || "", apiSession.created || false);
-    });
-  }
-  /** Authenticate a user with Google against the server. */
-  authenticateGoogle(_0, _1, _2, _3) {
-    return __async(this, arguments, function* (token, create, username, vars, options = {}) {
-      const request = {
-        token,
-        vars
-      };
-      const apiSession = yield this.apiClient.authenticateGoogle(
-        this.serverkey,
-        "",
-        request,
-        create,
-        username,
-        options
-      );
-      return new Session(
-        apiSession.token || "",
-        apiSession.refresh_token || "",
-        apiSession.created || false
-      );
-    });
-  }
-  /** Authenticate a user with GameCenter against the server. */
-  authenticateGameCenter(_0, _1, _2, _3, _4, _5, _6, _7, _8) {
-    return __async(this, arguments, function* (bundleId, playerId, publicKeyUrl, salt, signature, timestamp, username, create, vars, options = {}) {
-      const request = {
-        bundle_id: bundleId,
-        player_id: playerId,
-        public_key_url: publicKeyUrl,
-        salt,
-        signature,
-        timestamp_seconds: timestamp,
-        vars
-      };
-      const apiSession = yield this.apiClient.authenticateGameCenter(
-        this.serverkey,
-        "",
-        request,
-        create,
-        username,
-        options
-      );
-      return new Session(
-        apiSession.token || "",
-        apiSession.refresh_token || "",
-        apiSession.created || false
-      );
-    });
-  }
-  /** Authenticate a user with Steam against the server. */
-  authenticateSteam(token, create, username, sync, vars) {
-    return __async(this, null, function* () {
-      const request = {
-        "token": token,
-        "vars": vars,
-        "sync": sync
-      };
-      return this.apiClient.authenticateSteam(this.serverkey, "", request, create, username).then((apiSession) => {
-        return new Session(apiSession.token || "", apiSession.refresh_token || "", apiSession.created || false);
-      });
     });
   }
   /** Ban users from a group. */
@@ -5466,6 +5375,28 @@ var Client = class {
           max_num_score: response.max_num_score ? Number(response.max_num_score) : 0,
           rank: response.rank ? Number(response.rank) : 0
         });
+      });
+    });
+  }
+  /** Send an email OTP for authentication. */
+  sendEmailOTP(email) {
+    return __async(this, null, function* () {
+      const request = {
+        email
+      };
+      return this.apiClient.sendEmailAuthOTP("", request).then(() => {
+        return true;
+      });
+    });
+  }
+  /** Send a Telegram OTP for authentication. */
+  sendTelegramOTP(telegramId) {
+    return __async(this, null, function* () {
+      const request = {
+        telegram_id: telegramId
+      };
+      return this.apiClient.sendTelegramAuthOTP("", request).then(() => {
+        return true;
       });
     });
   }

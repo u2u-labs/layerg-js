@@ -403,24 +403,13 @@ export declare class Client {
     addGroupUsers(session: Session, groupId: string, ids?: Array<string>): Promise<boolean>;
     /** Add friends by ID or username to a user's account. */
     addFriends(session: Session, ids?: Array<string>, usernames?: Array<string>): Promise<boolean>;
-    /** Authenticate a user with an Apple ID against the server. */
-    authenticateApple(token: string, create?: boolean, username?: string, vars?: Record<string, string>, options?: any): Promise<Session>;
     /** Authenticate a user with a custom id against the server. */
     authenticateCustom(id: string, create?: boolean, username?: string, vars?: Record<string, string>, options?: any): Promise<Session>;
     /** Authenticate a user with a device id against the server. */
     authenticateDevice(id: string, create?: boolean, username?: string, vars?: Record<string, string>): Promise<Session>;
     /** Authenticate a user with an email+password against the server. */
-    authenticateEmail(email: string, password: string, create?: boolean, username?: string, vars?: Record<string, string>): Promise<Session>;
-    /** Authenticate a user with a Facebook Instant Game token against the server. */
-    authenticateFacebookInstantGame(signedPlayerInfo: string, create?: boolean, username?: string, vars?: Record<string, string>, options?: any): Promise<Session>;
-    /** Authenticate a user with a Facebook OAuth token against the server. */
-    authenticateFacebook(token: string, create?: boolean, username?: string, sync?: boolean, vars?: Record<string, string>, options?: any): Promise<Session>;
-    /** Authenticate a user with Google against the server. */
-    authenticateGoogle(token: string, create?: boolean, username?: string, vars?: Record<string, string>, options?: any): Promise<Session>;
-    /** Authenticate a user with GameCenter against the server. */
-    authenticateGameCenter(bundleId: string, playerId: string, publicKeyUrl: string, salt: string, signature: string, timestamp: string, username?: string, create?: boolean, vars?: Record<string, string>, options?: any): Promise<Session>;
-    /** Authenticate a user with Steam against the server. */
-    authenticateSteam(token: string, create?: boolean, username?: string, sync?: boolean, vars?: Record<string, string>): Promise<Session>;
+    authenticateEmail(email: string, otp: string, create?: boolean, vars?: Record<string, string>): Promise<Session>;
+    authenticateUA(code: string, state: string, source: number, vars?: Record<string, string>): Promise<Session>;
     /** Ban users from a group. */
     banGroupUsers(session: Session, groupId: string, ids?: Array<string>): Promise<boolean>;
     /** Block one or more users by ID or username. */
@@ -561,4 +550,8 @@ export declare class Client {
     writeStorageObjects(session: Session, objects: Array<WriteStorageObject>): Promise<ApiStorageObjectAcks>;
     /** Write a record to a tournament. */
     writeTournamentRecord(session: Session, tournamentId: string, request: WriteTournamentRecord): Promise<LeaderboardRecord>;
+    /** Send an email OTP for authentication. */
+    sendEmailOTP(email: string): Promise<boolean>;
+    /** Send a Telegram OTP for authentication. */
+    sendTelegramOTP(telegramId: string): Promise<boolean>;
 }
