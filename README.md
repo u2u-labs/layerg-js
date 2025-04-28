@@ -1,0 +1,1 @@
+LayerG sdk for Javascript

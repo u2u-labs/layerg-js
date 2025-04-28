@@ -1,5 +1,5 @@
 {
-    "name": "@u2u-labs/layerg-js",
+    "name": "@layerg/layerg-js",
     "version": "2.8.0",
     "scripts": {
         "build": "npx tsc && npx rollup -c --bundleConfigAsCjs && node build.mjs"
