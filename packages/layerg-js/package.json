@@ -1,6 +1,6 @@
 {
     "name": "@layerg/layerg-js",
-    "version": "2.8.0",
+    "version": "0.0.4",
     "scripts": {
         "build": "npx tsc && npx rollup -c --bundleConfigAsCjs && node build.mjs"
     },
